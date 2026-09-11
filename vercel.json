@@ -3,7 +3,7 @@
   "functions": {
     "main.py": {
       "maxDuration": 30,
-      "excludeFiles": "{frontend/**,docs/**,README.md,backend/tests/**,backend/.pytest_cache/**,backend/.venv/**,backend/__pycache__/**,data/processed/**,data/raw/currents_incois_io-hoofs_sample.nc,data/raw/temperature_salinity_incois_argo_sample.nc,data/raw/*.headers.txt,data/raw/*.query.txt,data/raw/*.provenance.md,data/raw/README.md}"
+      "excludeFiles": "{frontend/**,docs/**,README.md,backend/tests/**,data/processed/**,data/raw/*.{txt,md},data/raw/currents_incois_io-hoofs_sample.nc,data/raw/temperature_salinity_incois_argo_sample.nc}"
     }
   }
 }
