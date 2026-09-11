@@ -213,3 +213,5 @@ INCOIS-Ocean-Visualization/
 │   └── bluenexus/     # .bnx containers (git-ignored, regenerated)
 └── docs/              # data acquisition, provenance, and per-step design notes
 ```
+
+Deployment pipeline verified via GitHub → Vercel.
