@@ -1,0 +1,11 @@
+HTTP/1.1 200 
+Date: Sun, 06 Sept 2026 11:13:18 GMT
+Server: 
+Last-Modified: Sun, 06 Sept 2026 11:13:18 GMT
+xdods-server: dods/3.7
+erddap-server: 2.30.0
+Content-Disposition: attachment;filename=Indian_ARGO_Floats_4ebc_720d_024b.csv
+Content-Encoding: identity
+Content-Type: text/csv;charset=ISO-8859-1
+Transfer-Encoding: chunked
+

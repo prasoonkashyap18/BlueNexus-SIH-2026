@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="http://www.unidata.ucar.edu/namespaces/thredds/InvCatalog/v1.0" version="1.2">
+  <service name="all" serviceType="compound" base="">
+    <service name="http" serviceType="HTTPServer" base="/thredds/fileServer/" />
+    <service name="ncssGrid" serviceType="NetcdfSubset" base="/thredds/ncss/grid/" />
+  </service>
+  <dataset name="OSF_Currents">
+    <property name="DatasetScan" value="true" />
+    <dataset name="CURRENTS_IO_20260904.nc" ID="OSF1/CURRENTS_IO_20260904.nc" urlPath="osf/currents/CURRENTS_IO_20260904.nc">
+      <dataSize units="Mbytes">597.2</dataSize>
+      <date type="modified">2026-09-05T06:00:37.832Z</date>
+    </dataset>
+    <dataset name="CURRENTS_IO_20260907.nc" ID="OSF1/CURRENTS_IO_20260907.nc" urlPath="osf/currents/CURRENTS_IO_20260907.nc">
+      <dataSize units="Mbytes">597.2</dataSize>
+      <date type="modified">2026-09-08T05:41:11.001Z</date>
+    </dataset>
+    <dataset name="CURRENTS_IO_20260906.nc" ID="OSF1/CURRENTS_IO_20260906.nc" urlPath="osf/currents/CURRENTS_IO_20260906.nc">
+      <dataSize units="Mbytes">597.2</dataSize>
+      <date type="modified">2026-09-07T04:10:52.113Z</date>
+    </dataset>
+    <dataset name="CURRENTS_NIO_20260907.nc" ID="OSF1/CURRENTS_NIO_20260907.nc" urlPath="osf/currents/CURRENTS_NIO_20260907.nc">
+      <dataSize units="Mbytes">597.2</dataSize>
+      <date type="modified">2026-09-08T05:41:20.400Z</date>
+    </dataset>
+  </dataset>
+</catalog>

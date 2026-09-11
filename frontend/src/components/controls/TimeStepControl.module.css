@@ -1,0 +1,75 @@
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.16s ease;
+}
+
+.stepper:hover {
+  border-color: var(--panel-border-strong);
+}
+
+.step {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  transition:
+    color 0.16s ease,
+    background 0.16s ease;
+}
+
+.step:hover:not(:disabled) {
+  color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.step:disabled {
+  color: var(--text-faint);
+  opacity: 0.45;
+  cursor: default;
+}
+
+.value {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--text-heading);
+}
+
+/* Position within the temporal axis. */
+.ticks {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: -2px;
+}
+
+.tick,
+.tickOn {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  transition:
+    background 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.22s ease;
+}
+
+.tickOn {
+  background: var(--accent);
+  box-shadow: 0 0 7px -1px var(--accent);
+  transform: scale(1.25);
+}

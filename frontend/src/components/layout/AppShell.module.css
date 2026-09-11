@@ -1,0 +1,281 @@
+.shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.stageLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* The stage is the tab panel for the header navigation and holds no focusable
+   children yet, so it takes focus itself. Inset the ring — an offset one would
+   sit outside the viewport. */
+.stageLayer:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+
+/* Geometry comes from the shared .ov-app-grid utility in index.css, which the
+   viewport HUD applies too — both must resolve to the same centre cell. */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  /* Let clicks fall through to the viewport everywhere except on the panels. */
+  pointer-events: none;
+}
+
+.overlay > * {
+  pointer-events: auto;
+  min-height: 0;
+}
+
+.header {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  animation: dropIn 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.dock {
+  grid-row: 2;
+  display: flex;
+}
+
+/* Edge toggles + backdrop exist only in drawer mode — inert on desktop. */
+.dockToggles {
+  display: none;
+}
+
+.backdrop {
+  display: none;
+}
+
+/*
+ * Location bar — centred at the top of the same cell the viewport HUD uses.
+ * Width is a share of that cell rather than a fixed size, so it always leaves
+ * the HUD's top corners room either side of it, and it sits above the docks so
+ * the region catalogue can open over them.
+ */
+.locate {
+  grid-column: 2;
+  grid-row: 2;
+  z-index: 3;
+  justify-self: center;
+  align-self: start;
+  width: clamp(300px, 46%, 460px);
+  animation: dropIn 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: 0.08s;
+}
+
+.left {
+  grid-column: 1;
+  animation: slideL 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: 0.05s;
+}
+
+.right {
+  grid-column: 3;
+  animation: slideR 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: 0.1s;
+}
+
+.timeline {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  animation: riseIn 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: 0.14s;
+}
+
+@keyframes dropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes slideL {
+  from {
+    opacity: 0;
+    transform: translateX(-18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes slideR {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Small-laptop band: the centre cell is narrow enough that the location bar's
+   search placeholder was clipping. Give it a larger share of the cell — still
+   leaving the HUD's top corners room either side. Desktop (> 1360px) keeps the
+   original clamp. */
+@media (max-width: 1360px) and (min-width: 1181px) {
+  .locate {
+    width: clamp(320px, 62%, 460px);
+  }
+}
+
+/* ============================================================= *
+ *  Drawer mode  (<= --bp-drawer)
+ *
+ *  The three-column grid has collapsed to one column (index.css). The two
+ *  side panels leave the flow and become slide-in overlays over the
+ *  still-full-bleed 3D scene; the header, location bar and timeline keep
+ *  their rows and simply span the single column.
+ * ============================================================= */
+@media (max-width: 1180px) {
+  /* Location bar spans the column instead of sitting in the (gone) centre cell. */
+  .locate {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: center;
+    width: min(100%, 540px);
+  }
+
+  /* The timeline stays a live control while a drawer is open — lift it clear
+     of the backdrop rather than letting the dim layer swallow scrub taps. */
+  .timeline {
+    position: relative;
+    z-index: 7;
+  }
+
+  /* No entry animation in drawer mode — its `transform: none` end state would
+     fight the open/close transform below. The transition handles the slide. */
+  .left,
+  .right {
+    animation: none;
+  }
+
+  .dock {
+    position: fixed;
+    top: calc(var(--header-h) + var(--gap) * 2);
+    bottom: calc(var(--timeline-h) + var(--gap) * 2);
+    width: min(384px, 86vw);
+    z-index: 6;
+    transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.2, 1), visibility 0.28s;
+  }
+
+  .left {
+    left: var(--gap);
+    transform: translateX(calc(-100% - var(--gap) - 6px));
+  }
+
+  .right {
+    right: var(--gap);
+    transform: translateX(calc(100% + var(--gap) + 6px));
+  }
+
+  /* Closed drawers take no pointer or a11y focus while parked off-screen. */
+  .dock:not([data-open='true']) {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .dock[data-open='true'] {
+    visibility: visible;
+    transform: none;
+  }
+
+  /* Dim + capture taps behind an open drawer. */
+  .backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    border: 0;
+    padding: 0;
+    background: rgba(3, 8, 14, 0.5);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    cursor: default;
+  }
+
+  .overlay:not([data-dock-open='none']) .backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Panel switcher, centred just above the timeline — clear of the HUD's
+     bottom-left / bottom-right corner readouts, which sit at the edges. */
+  .dockToggles {
+    display: flex;
+    gap: 8px;
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(var(--timeline-h) + var(--gap) * 2);
+    z-index: 4;
+    /* Only the pills themselves catch input — the gap between them and the
+       container padding stay transparent to camera drags on the scene. */
+    pointer-events: none;
+  }
+
+  .dockToggle {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--text-primary);
+    background: var(--panel-bg-strong);
+    border: 1px solid var(--panel-border-strong);
+    border-radius: 999px;
+    box-shadow: var(--panel-shadow);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    transition: color 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+  }
+
+  .dockToggle[aria-expanded='true'] {
+    color: var(--accent-strong);
+    background: var(--accent-bg);
+    border-color: var(--accent-border);
+  }
+}
+
+/* Small screens: drawers become near-full-width sheets; toggles centre-align. */
+@media (max-width: 560px) {
+  .dock {
+    width: min(94vw, 420px);
+  }
+
+  .dockToggle {
+    padding: 8px 12px;
+    font-size: 11.5px;
+  }
+}

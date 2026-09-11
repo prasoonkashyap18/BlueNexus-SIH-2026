@@ -1,0 +1,76 @@
+{
+  "datasets": {
+    "currents": {
+      "installed": {
+        "acquired_at": "2026-09-05T18:49:56Z",
+        "artifact_contract_sha256": "5d31d050916978bd2dd40e3c35d45923a82466f07ed6ceeedc0b553dd7d18c7d",
+        "artifact_sha256": "2440a96038f4583eb490dad5ff1f96e5b98cdb729dad815b81c94c5a4c7c2add",
+        "published_at": "2026-09-05T20:39:12Z",
+        "source_file_bytes": 24300572,
+        "source_file_sha256": "40d8cdce6aca95b066eb662221c5627e684fda06556b2c047776b5d7c0d5ba7d",
+        "source_identifier": "CURRENTS_IO_20260904.nc",
+        "source_time_end": "2026-09-08T19:30:00Z",
+        "source_time_start": "2026-09-05T01:30:00Z",
+        "source_version": "CURRENTS_IO_20260904.nc"
+      },
+      "last_update": {
+        "at": null,
+        "error": null,
+        "status": "baseline"
+      },
+      "latest_checked": {
+        "checked_at": "2026-09-06T06:07:07Z",
+        "newer_available": true,
+        "remote_last_modified": "2026-09-05T22:37:07.930Z",
+        "source_identifier": "CURRENTS_IO_20260905.nc",
+        "source_time_end": null,
+        "source_time_start": "2026-09-05T00:00:00Z",
+        "source_version": "CURRENTS_IO_20260905.nc"
+      },
+      "logical_dataset_id": "incois_io_hoofs_surface_currents",
+      "product_type": "forecast",
+      "source": {
+        "dataset_id": "CURRENTS_IO_20260904.nc",
+        "name": "INCOIS THREDDS (IO-HOOFS)",
+        "url": "https://incois.gov.in/thredds/catalog/osf/currents/catalog.html"
+      }
+    },
+    "temperature-salinity": {
+      "installed": {
+        "acquired_at": "2026-09-05T18:48:37Z",
+        "artifact_contract_sha256": "89adb7ffc732d414aa7df693a5c5d96bbad33833ff50dec7c29c130f0c23ca95",
+        "artifact_sha256": "9d0b062bff56f788a9d192cc7a89d8fe5fbf55616734c39882d928d1f8c6a1da",
+        "published_at": "2026-09-05T20:39:12Z",
+        "source_file_bytes": 1062744,
+        "source_file_sha256": "17f5caa863b34aa25ea72556f1ae186689a7d79fb748c8b936d0fd62bb6c9e6d",
+        "source_identifier": "incois_argo_10day_McCreary",
+        "source_time_end": "2026-07-30T00:00:00Z",
+        "source_time_start": "2026-07-10T00:00:00Z",
+        "source_version": "2026-07-30T00:00:00Z"
+      },
+      "last_update": {
+        "at": null,
+        "error": null,
+        "status": "baseline"
+      },
+      "latest_checked": {
+        "checked_at": "2026-09-06T06:07:06Z",
+        "newer_available": false,
+        "remote_last_modified": null,
+        "source_identifier": "incois_argo_10day_McCreary",
+        "source_time_end": "2026-07-30T00:00:00Z",
+        "source_time_start": "2026-07-10T00:00:00Z",
+        "source_version": "2026-07-30T00:00:00Z"
+      },
+      "logical_dataset_id": "incois_argo_10day_analysis",
+      "product_type": "analysis",
+      "source": {
+        "dataset_id": "incois_argo_10day_McCreary",
+        "name": "INCOIS ERDDAP",
+        "url": "https://erddap.incois.gov.in/erddap/griddap/incois_argo_10day_McCreary.html"
+      }
+    }
+  },
+  "schema": "bluenexus.update-manifest/1",
+  "updated_at": "2026-09-06T06:07:07Z"
+}

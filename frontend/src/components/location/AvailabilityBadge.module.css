@@ -1,0 +1,57 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Colour carries the state; the wording repeats it for anyone who cannot
+   read the hue, and the dot alone always keeps an accessible name. */
+.available {
+  color: var(--accent);
+}
+.available .dot,
+.dot.available {
+  background: var(--accent);
+  box-shadow: 0 0 8px rgba(63, 216, 208, 0.5);
+}
+
+.loading {
+  color: var(--hold);
+}
+.loading .dot,
+.dot.loading {
+  background: var(--hold);
+  animation: blink 1.4s ease-in-out infinite;
+}
+
+.unavailable {
+  color: var(--text-faint);
+}
+.unavailable .dot,
+.dot.unavailable {
+  background: var(--text-faint);
+  box-shadow: none;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}

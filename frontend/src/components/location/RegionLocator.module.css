@@ -1,0 +1,72 @@
+.locator {
+  display: block;
+  overflow: visible;
+}
+
+/* The globe body — barely there, just enough to separate the grid from the
+   scene behind it. */
+.globe {
+  fill: rgba(9, 22, 34, 0.55);
+  stroke: none;
+}
+
+.grid {
+  fill: none;
+  stroke: var(--panel-border-strong);
+  stroke-width: 0.6;
+  opacity: 0.55;
+  vector-effect: non-scaling-stroke;
+}
+
+.equator {
+  fill: none;
+  stroke: var(--text-faint);
+  stroke-width: 0.8;
+  opacity: 0.9;
+  vector-effect: non-scaling-stroke;
+}
+
+.limb {
+  fill: none;
+  stroke: var(--panel-border-strong);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.marker {
+  fill: var(--text-faint);
+}
+
+.highlight {
+  fill: var(--text-primary);
+}
+
+.active {
+  fill: var(--accent);
+}
+
+.halo {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: 0.55;
+  animation: pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.86);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+}
+
+/* Scale about the marker rather than the SVG origin. */
+.halo {
+  transform-box: fill-box;
+  transform-origin: center;
+}

@@ -1,0 +1,55 @@
+.viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  /* The scene is the only thing allowed to be this large; nothing inside it
+     may push the page into a scrollbar. */
+  overflow: hidden;
+
+  /* Environment. Painted on the viewport rather than the canvas host so it is
+     already on screen while the renderer initialises, instead of a flat black
+     rectangle. */
+  background: radial-gradient(
+    130% 90% at 50% -12%,
+    #1c4361 0%,
+    #0d2739 30%,
+    #071a2a 58%,
+    #04101c 100%
+  );
+}
+
+/* Slow-drifting light field (implied surface caustics). Transform + opacity
+   only, so it stays off the layout and paint paths. */
+.viewport::before {
+  content: '';
+  position: absolute;
+  inset: -25% -25% auto -25%;
+  height: 75%;
+  background:
+    radial-gradient(38% 60% at 22% 28%, rgba(96, 188, 205, 0.1), transparent 70%),
+    radial-gradient(34% 55% at 72% 18%, rgba(70, 150, 190, 0.08), transparent 70%);
+  filter: blur(34px);
+  animation: drift 46s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes drift {
+  from {
+    transform: translate3d(-4%, 0, 0) scale(1.05);
+  }
+  to {
+    transform: translate3d(4%, 2%, 0) scale(1.1);
+  }
+}
+
+/* Sits above the scene and below the HUD: it darkens the frame edges so the
+   docked glass panels read as floating over depth rather than over a wall. */
+.vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  box-shadow: inset 0 0 220px rgba(0, 0, 0, 0.6);
+}

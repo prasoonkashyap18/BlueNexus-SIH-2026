@@ -1,0 +1,201 @@
+/*
+ * Step 46 — model ↔ observation comparison charts. Hand-drawn SVG, BlueNexus
+ * dark scientific style, shared with the Step 32 profile chart.
+ */
+.chart {
+  --mc-model: var(--accent);
+  --mc-obs: var(--hold);
+  --mc-warm: #e2683c;
+  --mc-cold: #4aa3e0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 10px 9px;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(63, 216, 208, 0.05), transparent 70%),
+    rgba(4, 10, 17, 0.42);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-md);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  padding: 0;
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legendHint {
+  font-size: 9.5px;
+  color: var(--text-faint);
+  letter-spacing: 0.02em;
+}
+
+.swatch {
+  display: inline-block;
+  width: 16px;
+  height: 0;
+  border-top-width: 2px;
+  border-top-style: solid;
+}
+
+.swatchModel {
+  border-top-color: var(--mc-model);
+}
+
+.swatchObs {
+  border-top-color: var(--mc-obs);
+  border-top-style: dashed;
+}
+
+.swatchDiff {
+  border-top: none;
+  width: 16px;
+  height: 10px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--mc-cold) 0 50%, var(--mc-warm) 50% 100%);
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.grid line {
+  stroke: rgba(126, 178, 214, 0.1);
+  stroke-width: 0.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.axis line {
+  stroke: rgba(126, 178, 214, 0.28);
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+}
+
+.tickLabel text {
+  fill: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.02em;
+}
+
+.axisTitle {
+  fill: var(--text-primary);
+  font-size: 8.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+/* --- Model series (assessed) --- */
+.modelGlow {
+  fill: none;
+  stroke: var(--mc-model);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.12;
+}
+
+.modelLine {
+  fill: none;
+  stroke: var(--mc-model);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.modelMarkers circle {
+  fill: var(--ocean-abyss);
+  stroke: var(--mc-model);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* --- Observation series (reference) --- */
+.obsLine {
+  fill: none;
+  stroke: var(--mc-obs);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 4 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.obsMarkers circle {
+  fill: var(--mc-obs);
+  vector-effect: non-scaling-stroke;
+}
+
+/* --- Difference chart --- */
+.zeroLine {
+  stroke: rgba(205, 217, 230, 0.55);
+  stroke-width: 0.9;
+  stroke-dasharray: 2 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.diffLine {
+  fill: none;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.9;
+}
+
+.stemWarm {
+  stroke: var(--mc-warm);
+  stroke-width: 1.1;
+  opacity: 0.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.stemCold {
+  stroke: var(--mc-cold);
+  stroke-width: 1.1;
+  opacity: 0.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.dotWarm {
+  fill: var(--mc-warm);
+  vector-effect: non-scaling-stroke;
+}
+
+.dotCold {
+  fill: var(--mc-cold);
+  vector-effect: non-scaling-stroke;
+}
+
+.state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 12px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-faint);
+  text-align: left;
+}
+
+.stateIcon {
+  flex: none;
+  font-size: 13px;
+  opacity: 0.7;
+}

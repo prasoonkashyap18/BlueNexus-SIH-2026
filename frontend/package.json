@@ -1,0 +1,33 @@
+{
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview",
+    "test": "node --test tests/api.test.ts tests/temperature.test.ts tests/salinity.test.ts tests/current.test.ts tests/argo.test.ts tests/glider.test.ts tests/observation-markers.test.ts tests/temperature-profile.test.ts tests/salinity-profile.test.ts tests/profile-variable.test.ts tests/geography.test.ts tests/model-data.test.ts tests/model-coverage.test.ts tests/model-observation.test.ts tests/observed-temperature-profile.test.ts tests/temperature-comparison.test.ts tests/model-comparison.test.ts tests/comparison-states.test.ts tests/data-sources.test.ts tests/data-failure.test.ts tests/error-boundary.test.ts",
+    "test:integration": "node tests/integration.check.mjs",
+    "test:integration:d12": "node tests/temperature.check.mjs",
+    "test:integration:d13": "node tests/salinity-current.check.mjs"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.8",
+    "@react-three/fiber": "^9.7.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "three": "^0.185.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@types/three": "^0.185.4",
+    "@vitejs/plugin-react": "^6.1.0",
+    "oxlint": "^1.79.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.2"
+  }
+}

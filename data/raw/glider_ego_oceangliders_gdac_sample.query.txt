@@ -1,0 +1,7 @@
+# Source: EGO / OceanGliders GDAC  --  dataset 'OceanGlidersGDACTrajectories'  --  IFREMER ERDDAP tabledap (CSV)
+# ERDDAP base: https://erddap.ifremer.fr/erddap/tabledap/OceanGlidersGDACTrajectories
+# Retrieved: 2026-09-06
+# Deployment sea057_20220707  (SeaExplorer, Gulf of Oman / N Arabian Sea) :  2022-07-03T00:00Z .. 2022-07-09T00:00Z
+https://erddap.ifremer.fr/erddap/tabledap/OceanGlidersGDACTrajectories.csv?platform_deployment,time,latitude,longitude,PRES,PRES_QC,TEMP,TEMP_QC,PSAL,PSAL_QC,POSITION_QC&platform_deployment=%22sea057_20220707%22&time%3E=2022-07-03T00:00:00Z&time%3C=2022-07-09T00:00:00Z&orderBy(%22time%22)
+# Deployment Bellatrix_368     (Slocum, central Bay of Bengal, 2016 ASIRI/OMM) :  2016-07-06T00:00Z .. 2016-07-06T06:00Z
+https://erddap.ifremer.fr/erddap/tabledap/OceanGlidersGDACTrajectories.csv?platform_deployment,time,latitude,longitude,PRES,PRES_QC,TEMP,TEMP_QC,PSAL,PSAL_QC,POSITION_QC&platform_deployment=%22Bellatrix_368%22&time%3E=2016-07-06T00:00:00Z&time%3C=2016-07-06T06:00:00Z&orderBy(%22time%22)

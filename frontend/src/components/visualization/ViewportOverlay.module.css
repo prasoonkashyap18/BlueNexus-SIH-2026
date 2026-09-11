@@ -1,0 +1,424 @@
+/*
+ * Layer geometry: the HUD repeats the shell grid (via the shared .ov-app-grid
+ * utility) and uses only its centre cell, so the readouts land in the corners
+ * of the space between the docked panels rather than the corners of the window.
+ */
+.hud {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  /* Informational only — every pointer event belongs to the scene beneath. */
+  pointer-events: none;
+}
+
+.frame {
+  position: relative;
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+  min-height: 0;
+}
+
+.corner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-width: 46%;
+  animation: fade 0.6s ease both;
+  animation-delay: 0.18s;
+}
+
+/* Dropped clear of the floating location bar, which is centred on the same
+   top edge — the two must never meet however narrow the cell gets. */
+.topLeft {
+  top: 50px;
+  left: 4px;
+}
+.topRight {
+  top: 50px;
+  right: 4px;
+  align-items: flex-end;
+  text-align: right;
+}
+.bottomLeft {
+  bottom: 2px;
+  left: 4px;
+}
+/*
+ * The camera-gesture hint. Named for its old home in the bottom-right corner,
+ * but that corner is where the in-scene depth axis runs its lower rungs
+ * ("4000 m", "5000 m") at the default framing and every exaggeration, so the
+ * hint printed straight over those plates (found in Step 52 testing).
+ *
+ * It is informational — the same register as the layer count directly above —
+ * so it now sits under the top-right readout group, where the depth axis never
+ * reaches: the axis starts at the waterline, which the home camera keeps at or
+ * below the vertical centre at 1×–10×.
+ */
+.bottomRight {
+  top: 104px;
+  right: 4px;
+  align-items: flex-end;
+  text-align: right;
+}
+
+/* Sits on the left edge, clear of the topLeft variable readout above and the
+   bottomLeft place readout below — same 4px inset as every other corner. The
+   right edge is where the in-scene depth axis labels run, so the legend lives
+   on the opposite side to stay clear of them at any camera angle. */
+.colorbarSlot {
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  transform: translateY(-50%);
+  animation: fade 0.6s ease both;
+  animation-delay: 0.18s;
+}
+
+/* Step 48 — the selected field's failure / empty notice. Sits under the
+   top-left field readout; the scene keeps rendering behind it. This slot (and
+   only this slot) opts back into pointer events so the Retry button works. */
+.fieldNotice {
+  position: absolute;
+  top: 128px;
+  left: 4px;
+  width: min(300px, 44%);
+  pointer-events: auto;
+  animation: fade 0.4s ease both;
+}
+
+.emptyNotice {
+  margin: 0;
+  padding: 11px 13px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-muted);
+  background: rgba(5, 12, 20, 0.55);
+  border: 1px dashed var(--panel-border);
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+@media (max-height: 620px) {
+  .fieldNotice {
+    display: none;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* --- Top left: the field being shown --- */
+
+.variable {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-heading);
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.65);
+}
+
+.unit {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--accent);
+}
+
+/* Matches the "Demo" pill in the observation panel — same amber, same weight
+   — so a reader learns the one tone for "not a real measurement" once. */
+.datasetTag {
+  padding: 2px 7px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--hold);
+  background: rgba(216, 182, 79, 0.1);
+  border: 1px solid rgba(216, 182, 79, 0.3);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* Shared readout line — mono, quiet, legible over any part of the scene. */
+.line {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
+  white-space: nowrap;
+}
+
+/* --- Top right: what the viewport is currently showing --- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 11px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  background: rgba(5, 12, 20, 0.42);
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  white-space: nowrap;
+}
+
+.badgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+/* --- Centre: engine status --- */
+
+.centre {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 0 24px;
+}
+
+.engine {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  /* A quiet status watermark — it sits over the scientific field, so it must
+     never read louder than the data behind it. */
+  opacity: 0.5;
+  text-align: center;
+  /* Replays on every workspace switch — keyed by the active view. */
+  animation: modeSwap 0.42s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes modeSwap {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* A small static marker. No infinite pulse — a constantly animating element
+   over the 3D field pulls the eye away from the data it should be reading. */
+.engineDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.6;
+}
+
+/* --- Bottom left: where the platform is looking --- */
+
+/* Locator globe beside the readout it belongs to. Bottom-aligned, so the
+   block grows upwards as the text does. */
+.place {
+  display: flex;
+  align-items: flex-end;
+  gap: 11px;
+}
+
+.placeText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.region {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--text-heading);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.7);
+  white-space: nowrap;
+}
+
+.coord {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
+  white-space: nowrap;
+}
+
+/* --- Bottom right: camera gestures --- */
+
+.hints {
+  display: flex;
+  gap: 6px;
+}
+
+.hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  border: 1px dashed var(--panel-border);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+.hintKey {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+}
+
+/*
+ * Shed the least important readouts first as the centre cell narrows or
+ * shortens, so the corners never collide or overrun the scene.
+ */
+@media (max-width: 1320px) {
+  .hints {
+    display: none;
+  }
+}
+
+@media (max-width: 1040px) {
+  .corner {
+    max-width: 52%;
+  }
+  /* The scene readout is the least load-bearing line in the corner. */
+  .scene {
+    display: none;
+  }
+}
+
+/* Narrow frame: the centre engine watermark starts to crowd the left-edge
+   colorbar, so drop it — it carries no scientific value. */
+@media (max-width: 900px) {
+  .centre {
+    display: none;
+  }
+}
+
+@media (max-height: 620px) {
+  .bottomLeft,
+  .bottomRight,
+  .centre {
+    display: none;
+  }
+}
+
+/*
+ * Phone width. Both side panels are drawers (closed by default) so the HUD
+ * owns the frame, but the frame is now only ~360px wide — shrink the readouts,
+ * let the field name wrap, and drop the two right-hand corners (the layer
+ * count lives in the Controls panel; the camera-gesture hints are already gone
+ * below 1320px and are not actionable on a touch screen anyway).
+ */
+/* ================================================================= *
+ *  Step 50 — drawer mode (<= --bp-drawer) and phone width.
+ *
+ *  Placed last so these win on source order over the desktop corner
+ *  rules and the existing laptop media queries above (media queries add
+ *  no specificity).
+ * ================================================================= */
+
+/* Drawer mode: the centre cell is gone, so the HUD spans the single column.
+   Both side panels are off-screen overlays, so the readouts have the full
+   width and only need to clear the header / location bar / timeline and the
+   centred panel-switcher pills that sit just above the timeline. */
+@media (max-width: 1180px) {
+  .frame {
+    grid-column: 1;
+  }
+
+  /* Lift the bottom-left readout clear of the panel-switcher pills' band and
+     let the region-context line wrap rather than run toward the centre. The
+     camera-gesture hint is top-anchored now, so it needs neither. */
+  .bottomLeft {
+    bottom: 48px;
+    max-width: 46%;
+  }
+
+  .bottomRight {
+    max-width: 34%;
+  }
+
+  .bottomLeft .line {
+    white-space: normal;
+  }
+}
+
+/*
+ * Phone width. Both side panels are drawers (closed by default) so the HUD
+ * owns the frame, but the frame is only ~360px wide — shrink the readouts,
+ * let the field name wrap, and drop the two right-hand corners (the layer
+ * count lives in the Controls panel; the camera-gesture hints are already
+ * gone below 1320px and are not actionable on a touch screen anyway).
+ */
+@media (max-width: 560px) {
+  .topLeft {
+    top: 46px;
+    max-width: 82%;
+  }
+
+  .bottomLeft {
+    max-width: 66%;
+  }
+
+  .topRight,
+  .bottomRight {
+    display: none;
+  }
+
+  .variable {
+    flex-wrap: wrap;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+  }
+
+  .line {
+    font-size: 10px;
+  }
+
+  .fieldNotice {
+    width: min(300px, 82%);
+  }
+
+  .colorbarSlot {
+    transform: translateY(-50%) scale(0.86);
+    transform-origin: left center;
+  }
+}

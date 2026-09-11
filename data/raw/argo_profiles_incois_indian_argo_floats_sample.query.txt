@@ -1,0 +1,1 @@
+https://erddap.incois.gov.in/erddap/tabledap/Indian_ARGO_Floats.csv?PLATFORM_NUMBER,CYCLE_NUMBER,PLATFORM_TYPE,DIRECTION,time,latitude,longitude,PRES,PRES_QC,TEMP,TEMP_QC,PSAL,PSAL_QC&time%3E=2025-03-25T00:00:00Z&time%3C=2025-04-23T23:59:59Z&latitude%3E=-15&latitude%3C=30&longitude%3E=45&longitude%3C=100&orderBy(%22PLATFORM_NUMBER,CYCLE_NUMBER,PRES%22)

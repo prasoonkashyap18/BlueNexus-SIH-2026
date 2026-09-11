@@ -1,0 +1,32 @@
+.empty {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px dashed var(--panel-border);
+  border-radius: var(--radius-md);
+}
+
+.icon {
+  flex: none;
+  font-size: 15px;
+  color: var(--accent);
+  opacity: 0.8;
+}
+
+.compact {
+  justify-content: center;
+  padding: 26px 13px;
+  font-size: 11px;
+  color: var(--text-faint);
+  text-align: center;
+}
+
+.compact .icon {
+  font-size: 13px;
+  opacity: 0.55;
+}

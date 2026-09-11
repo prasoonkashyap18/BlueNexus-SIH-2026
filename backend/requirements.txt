@@ -1,0 +1,20 @@
+# Top-level backend dependencies. Pinned versions of the full tree are
+# resolved by pip; run `pip freeze` if an exact lockfile is needed.
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+
+# Step 37 -- xarray-backed scientific data layer (app.data.scientific), used by
+# future NetCDF ingestion work. Pulls in numpy + pandas as transitive deps.
+# Compatible with the Python 3.14 backend venv (cp314 wheels available).
+xarray==2026.7.0
+
+# Step 38 -- NetCDF ingestion (app.data.scientific.netcdf). Standard xarray
+# NetCDF engine; reads the project's classic NetCDF-3 files and NetCDF-4/HDF5.
+# Pulls in cftime + certifi as transitive deps. abi3 wheel, Python 3.14 OK.
+netCDF4==1.7.4
+
+# Step 45 -- TEOS-10 seawater toolbox, used ONLY by the model-vs-observation
+# comparison layer (app.data.comparison) to derive depth from Argo pressure:
+# comparison_depth_m = -gsw.z_from_p(pressure_dbar, latitude). Single package,
+# no new transitive deps (numpy already present); abi3 wheel (~2 MB).
+gsw==3.6.23

@@ -1,0 +1,9 @@
+HTTP/1.1 200 
+Date: Sat, 05 Sep 2026 18:49:56 GMT
+Server: Apache/2.4.63 (Red Hat Enterprise Linux) OpenSSL/3.5.5 mod_fcgid/2.3.9
+X-Frame-Options: SAMEORIGIN
+Content-Disposition: attachment; filename=CURRENTS_IO_20260904.nc
+Content-Type: application/x-netcdf
+Content-Length: 24300572
+X-XSS-Protection: 1; mode=block
+

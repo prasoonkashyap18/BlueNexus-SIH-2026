@@ -1,0 +1,118 @@
+/*
+ * Fixed-width list + equal-width tabs. Both are required by the sliding
+ * indicator: it translates by multiples of its own width, so every tab must
+ * occupy exactly one third of the track.
+ */
+.tabs {
+  position: relative;
+  display: flex;
+  width: var(--nav-w, 306px);
+  padding: 3px;
+  border-radius: var(--radius-md);
+  background: rgba(4, 8, 15, 0.5);
+  border: 1px solid var(--hairline);
+}
+
+.indicator {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc((100% - 6px) / 3);
+  border-radius: 7px;
+  background: var(--accent-bg);
+  box-shadow:
+    inset 0 0 0 1px var(--accent-border),
+    0 0 18px -8px var(--accent);
+  transform: translateX(calc(var(--tab-index, 0) * 100%));
+  transition: transform 0.34s cubic-bezier(0.2, 0.7, 0.2, 1);
+  pointer-events: none;
+}
+
+.tab {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  transition:
+    color 0.22s ease,
+    background 0.22s ease;
+}
+
+.tab:hover {
+  color: var(--text-primary);
+  background: rgba(126, 178, 214, 0.06);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.tabActive,
+.tabActive:hover {
+  color: var(--text-heading);
+  /* The sliding indicator supplies the active surface — keep the tab clear. */
+  background: transparent;
+}
+
+/* Marks a mode whose workspace has not been built yet. */
+.pending {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  transition:
+    background 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.tab:hover .pending {
+  background: var(--text-muted);
+}
+
+.tabActive .pending,
+.tabActive:hover .pending {
+  background: var(--hold);
+  box-shadow: 0 0 7px -1px var(--hold);
+}
+
+@media (max-width: 1040px) {
+  .tabs {
+    --nav-w: 264px;
+  }
+
+  .tab {
+    padding: 6px 6px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 880px) {
+  .tabs {
+    --nav-w: 228px;
+  }
+}
+
+@media (max-width: 560px) {
+  .tabs {
+    --nav-w: 210px;
+  }
+
+  .tab {
+    font-size: 11.5px;
+    letter-spacing: 0;
+  }
+}

@@ -1,0 +1,123 @@
+/* Step 47 — compact status / failure notice for the model-comparison flow.
+   Shared theme tokens so it reads as part of BlueNexus. */
+.box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0;
+  padding: 12px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-md);
+  background: rgba(4, 10, 17, 0.42);
+}
+
+/* loading / empty — neutral panel tone */
+.loading,
+.empty {
+  border-color: var(--panel-border);
+}
+
+/* coverage — expected data limit, calm (accent, not amber) */
+.coverage {
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+}
+
+/* error — the shared "signal" amber the rest of the UI uses for "not normal" */
+.error {
+  border-color: rgba(226, 104, 60, 0.28);
+  background: rgba(226, 104, 60, 0.06);
+}
+
+.icon {
+  flex: none;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.loading .icon,
+.empty .icon {
+  color: var(--text-muted);
+}
+
+.coverage .icon {
+  color: var(--accent-strong);
+}
+
+.error .icon {
+  color: var(--warn);
+}
+
+.spin {
+  display: inline-block;
+  animation: mc-spin 1s linear infinite;
+}
+
+@keyframes mc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.detail {
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.ctx {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-faint);
+  word-break: break-all;
+}
+
+.retry {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 4px 11px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--panel-border-strong);
+  border-radius: var(--radius-sm);
+  transition:
+    color 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease,
+    opacity 0.16s ease;
+}
+
+.retry:hover:not(:disabled) {
+  color: var(--accent-strong);
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+}
+
+.retry:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
+  }
+}

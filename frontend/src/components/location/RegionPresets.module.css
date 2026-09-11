@@ -1,0 +1,112 @@
+.presets {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+/* --- Locator --- */
+
+.locator {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding-top: 2px;
+}
+
+.caption {
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-heading);
+  text-align: center;
+}
+
+.coordinates {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  color: var(--text-faint);
+}
+
+/* --- Region list --- */
+
+.catalogue {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 232px;
+  overflow-y: auto;
+  margin-right: -4px;
+  padding-right: 4px;
+}
+
+.region {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 7px 10px;
+  text-align: left;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.region:hover,
+.region:focus-visible {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--panel-border);
+}
+
+.regionOn {
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+}
+
+.name {
+  font-size: 12.5px;
+  color: var(--text-heading);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  grid-column: 1 / -1;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  color: var(--text-faint);
+}
+
+.notice {
+  margin: 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--hairline);
+  font-size: 10px;
+  line-height: 1.45;
+  color: var(--text-faint);
+}
+
+/* The globe is the first thing to go when the popover has to narrow — the
+   list is what actually navigates. */
+@media (max-width: 1080px) {
+  .locator {
+    display: none;
+  }
+}

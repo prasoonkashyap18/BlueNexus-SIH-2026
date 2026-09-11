@@ -1,0 +1,177 @@
+/* Step 51 — Data Source section in the control panel. Shared BlueNexus tokens. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.offlineHint {
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+  text-transform: uppercase;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 9px 10px;
+  background: rgba(4, 10, 17, 0.42);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-md);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.context {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.sourceLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.varLine {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.badge {
+  flex: none;
+  padding: 1px 6px;
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+}
+
+.badgeIncois {
+  color: var(--accent-strong);
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+}
+
+.badgeExternal {
+  color: var(--hold);
+  background: rgba(216, 182, 79, 0.1);
+  border-color: rgba(216, 182, 79, 0.35);
+}
+
+.none {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.details {
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+
+.details summary {
+  cursor: pointer;
+  padding: 5px 0;
+  font-weight: 500;
+  color: var(--text-muted);
+  list-style: revert;
+}
+
+.details summary:hover {
+  color: var(--text-primary);
+}
+
+.detailsBody {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.entry {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 9px 10px;
+  background: rgba(4, 10, 17, 0.36);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+}
+
+.entryHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.entryLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.row dt {
+  color: var(--text-faint);
+}
+
+.row dd {
+  margin: 0;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.link {
+  align-self: flex-start;
+  font-size: 10px;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.link:hover {
+  color: var(--accent-strong);
+  text-decoration: underline;
+}
+
+.note {
+  font-size: 9.5px;
+  line-height: 1.5;
+  color: var(--text-faint);
+}

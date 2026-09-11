@@ -1,0 +1,195 @@
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  height: 100%;
+  padding: 0 18px;
+  background: var(--panel-bg);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--panel-shadow);
+}
+
+.transport {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.play {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  color: var(--accent-strong);
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: 50%;
+  box-shadow: var(--accent-glow);
+  transition:
+    transform 0.16s ease,
+    background 0.16s ease;
+}
+.play:hover {
+  transform: scale(1.06);
+}
+.play:active {
+  transform: scale(0.96);
+}
+
+.clock {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.date {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-heading);
+  letter-spacing: 0.02em;
+}
+.time {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+
+.track {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.scrub {
+  width: 100%;
+  height: 16px;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+.scrub::-webkit-slider-runnable-track {
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.14);
+}
+.scrub::-moz-range-track {
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.14);
+}
+.scrub::-moz-range-progress {
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.scrub::-webkit-slider-thumb {
+  appearance: none;
+  margin-top: -6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #eafcfb;
+  border: 1px solid var(--accent-border);
+  box-shadow: var(--accent-glow);
+  transition: transform 0.14s ease;
+}
+.scrub::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #eafcfb;
+  border: 1px solid var(--accent-border);
+  box-shadow: var(--accent-glow);
+}
+.scrub:hover::-webkit-slider-thumb {
+  transform: scale(1.14);
+}
+
+.ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+}
+
+.speed {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+  padding: 3px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+}
+.speedBtn {
+  padding: 5px 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  transition:
+    color 0.16s ease,
+    background 0.16s ease;
+}
+.speedBtn:hover {
+  color: var(--text-primary);
+}
+.speedOn {
+  color: var(--text-heading);
+  background: var(--accent-bg);
+  box-shadow: inset 0 0 0 1px var(--accent-border);
+}
+
+@media (max-width: 1180px) {
+  .bar {
+    gap: 14px;
+    padding: 0 12px;
+  }
+  .ticks {
+    display: none;
+  }
+}
+
+/* Phone: the transport, scrubber and speed buttons still fit one row, but
+   only just — tighten the gaps and the speed control so the scrubber keeps a
+   usable width. */
+@media (max-width: 560px) {
+  .bar {
+    gap: 9px;
+    padding: 0 10px;
+  }
+  .transport {
+    gap: 9px;
+  }
+  .date {
+    font-size: 11.5px;
+  }
+  .speedBtn {
+    padding: 5px 7px;
+    font-size: 10.5px;
+  }
+}
+
+/* Touch: a taller scrub hit area and larger handle for finger dragging. */
+@media (hover: none) and (pointer: coarse), (max-width: 560px) {
+  .scrub {
+    height: 30px;
+  }
+  .scrub::-webkit-slider-thumb {
+    margin-top: -9px;
+    width: 18px;
+    height: 18px;
+  }
+  .scrub::-moz-range-thumb {
+    width: 17px;
+    height: 17px;
+  }
+}

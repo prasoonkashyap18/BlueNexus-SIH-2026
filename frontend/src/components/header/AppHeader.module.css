@@ -1,0 +1,179 @@
+/*
+ * Three-column grid rather than flex: it pins the workspace tabs to the true
+ * centre of the header and lets the brand and status clusters shrink
+ * independently, so neither side can push the navigation off-centre on
+ * narrower laptop screens.
+ */
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  height: 100%;
+  padding: 0 16px;
+  background: linear-gradient(
+    180deg,
+    var(--panel-bg-strong),
+    rgba(8, 16, 25, 0.72)
+  );
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--panel-shadow);
+}
+
+/* --- Brand --- */
+/* `min-width: 0` lets the context tag below shrink and ellipsize. No
+   `overflow: hidden` here — it would clip the brand mark's accent glow. */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  color: var(--accent);
+  border-radius: var(--radius-md);
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  box-shadow: var(--accent-glow);
+}
+
+.wordmark {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  line-height: 1.15;
+}
+
+.wordmark strong {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--text-heading);
+}
+
+.wordmark span {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.tag {
+  min-width: 0;
+  padding-left: 16px;
+  margin-left: 4px;
+  border-left: 1px solid var(--hairline);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  color: var(--text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- Status cluster --- */
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  min-width: 0;
+}
+
+.divider {
+  width: 1px;
+  height: 22px;
+  flex: none;
+  background: var(--hairline);
+}
+
+.iconBtn {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  background: rgba(4, 8, 15, 0.4);
+  color: var(--text-muted);
+  transition:
+    color 0.22s ease,
+    background 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.22s ease;
+}
+
+.iconBtn:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  transform: translateY(-1px);
+}
+
+.iconBtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.iconBtnOn,
+.iconBtnOn:hover {
+  color: var(--accent-strong);
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+  box-shadow: inset 0 0 0 1px rgba(63, 216, 208, 0.16), 0 0 16px -8px var(--accent);
+}
+
+/* --- Responsive: shed context, never the navigation --- */
+@media (max-width: 1240px) {
+  .tag {
+    display: none;
+  }
+}
+
+@media (max-width: 1040px) {
+  .header {
+    gap: 12px;
+    padding: 0 12px;
+  }
+
+  .status {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 880px) {
+  .wordmark {
+    display: none;
+  }
+
+  .divider {
+    display: none;
+  }
+}
+
+/*
+ * Phone: the workspace tabs + the brand mark + the live connection dot are
+ * what the header is for at this width. The two utility icon buttons are
+ * not-yet-wired placeholders (Step 7) and are the first thing to drop so the
+ * navigation never collides with the status cluster.
+ */
+@media (max-width: 560px) {
+  .header {
+    gap: 8px;
+    padding: 0 10px;
+  }
+
+  .iconBtn {
+    display: none;
+  }
+}

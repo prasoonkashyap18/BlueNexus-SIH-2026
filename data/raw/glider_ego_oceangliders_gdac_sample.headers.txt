@@ -1,0 +1,13 @@
+HTTP/1.1 200 
+Date: Sun, 06 Sep 2026 11:55:53 GMT
+Server: Apache
+Last-Modified: Sun, 06 Sep 2026 11:55:53 GMT
+xdods-server: dods/3.7
+erddap-server: 2.30.0
+Content-Disposition: attachment;filename=OceanGlidersGDACTrajectories_86a0_14c9_0bbd.csv
+Content-Encoding: identity
+Content-Type: text/csv;charset=ISO-8859-1
+X-Content-Type-Options: nosniff
+Referrer-Policy: same-origin
+Transfer-Encoding: chunked
+

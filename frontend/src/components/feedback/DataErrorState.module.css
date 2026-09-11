@@ -1,0 +1,83 @@
+/* Step 48 — reusable data-failure notice. Uses the shared theme tokens so it
+   reads as part of BlueNexus, with the amber "signal" tone the rest of the UI
+   already uses for "not a normal state". */
+
+.box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0;
+  padding: 13px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--text-muted);
+  background: rgba(226, 104, 60, 0.06);
+  border: 1px solid rgba(226, 104, 60, 0.28);
+  border-radius: var(--radius-md);
+}
+
+.compact {
+  padding: 11px;
+  font-size: 11px;
+}
+
+.icon {
+  flex: none;
+  font-size: 14px;
+  color: var(--warn);
+  opacity: 0.9;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.detail {
+  color: var(--text-muted);
+}
+
+.contextId {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-faint);
+  word-break: break-all;
+}
+
+.retry {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 4px 11px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--panel-border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease,
+    opacity 0.16s ease;
+}
+
+.retry:hover:not(:disabled) {
+  color: var(--accent-strong);
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+}
+
+.retry:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

@@ -1,0 +1,192 @@
+:root {
+  color-scheme: dark;
+
+  /* --- Ocean atmosphere --- */
+  --ocean-abyss: #04080f;
+  --ocean-deep: #081420;
+  --ocean-mid: #0f2233;
+  --ocean-surface: #17384f;
+
+  /* --- Surfaces (glass) --- */
+  --panel-bg: rgba(9, 18, 28, 0.62);
+  --panel-bg-strong: rgba(8, 16, 25, 0.86);
+  --panel-border: rgba(126, 178, 214, 0.14);
+  --panel-border-strong: rgba(126, 178, 214, 0.3);
+  --panel-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.7);
+  --hairline: rgba(126, 178, 214, 0.12);
+
+  /* --- Text --- */
+  --text-primary: #cdd9e6;
+  --text-muted: #7f93a8;
+  --text-faint: #536379;
+  --text-heading: #f2f7fc;
+
+  /* --- Accent (bioluminescent teal) --- */
+  --accent: #3fd8d0;
+  --accent-strong: #6cece3;
+  --accent-bg: rgba(63, 216, 208, 0.12);
+  --accent-border: rgba(63, 216, 208, 0.42);
+  --accent-glow: 0 0 22px rgba(63, 216, 208, 0.28);
+
+  /* --- Signal colours (used sparingly, scientific meaning later) --- */
+  --warn: #e2683c;
+  --hold: #d8b64f;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --font-sans: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace;
+
+  --header-h: 58px;
+  --timeline-h: 94px;
+  --panel-w-left: 340px;
+  --panel-w-right: 362px;
+  --gap: 14px;
+
+  /* Below this the docked left/right panels can no longer share the row with a
+     usable 3D viewport, so the shell switches them to slide-in overlay drawers
+     and the grid collapses to a single column (see AppShell + ViewportOverlay).
+     Above it the desktop three-region composition is untouched. */
+  --bp-drawer: 1180px;
+
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-synthesis: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--ocean-abyss);
+  overflow: hidden;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  color: var(--text-heading);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+input,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: var(--accent-bg);
+}
+
+/*
+ * Keyboard focus baseline. `:where()` keeps specificity at zero so any
+ * component can refine the ring without fighting this rule.
+ */
+:where(button, a, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/*
+ * The application's three-column / three-row geometry.
+ *
+ * Shared by the shell's panel overlay and by the viewport HUD, so both resolve
+ * to exactly the same centre cell and the HUD readouts stay aligned with the
+ * gap between the docked panels. Change the geometry here, not in either
+ * module.
+ */
+.ov-app-grid {
+  display: grid;
+  grid-template-columns: var(--panel-w-left) 1fr var(--panel-w-right);
+  grid-template-rows: var(--header-h) 1fr var(--timeline-h);
+  gap: var(--gap);
+  padding: var(--gap);
+}
+
+/*
+ * Drawer mode. The left/right columns collapse — the panels become overlay
+ * drawers positioned by AppShell — so header, timeline, the location bar and
+ * the viewport HUD all reflow into one full-width column over the (still
+ * full-bleed) 3D scene. Desktop (> --bp-drawer) keeps the three-column grid.
+ */
+@media (max-width: 1180px) {
+  .ov-app-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Shared micro-label */
+.ov-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* Thin scrollbars inside panels */
+.ov-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--panel-border-strong) transparent;
+}
+.ov-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.ov-scroll::-webkit-scrollbar-thumb {
+  background: var(--panel-border-strong);
+  border-radius: 3px;
+}
+.ov-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (max-width: 1360px) {
+  :root {
+    --panel-w-left: 312px;
+    --panel-w-right: 330px;
+  }
+}
+
+@media (max-width: 1180px) {
+  :root {
+    --gap: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

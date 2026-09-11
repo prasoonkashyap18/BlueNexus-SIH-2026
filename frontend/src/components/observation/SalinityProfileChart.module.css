@@ -1,0 +1,125 @@
+/*
+ * Step 33 — real vertical salinity profile for the selected Argo float /
+ * glider deployment. Hand-drawn SVG (no charting dependency), matching the
+ * BlueNexus dark scientific style and the sibling TemperatureProfileChart.
+ */
+.chart {
+  /* A distinct cool violet — not the temperature chart's teal — so flipping
+     the profile variable is legible at a glance. This is a plain line colour,
+     not a scientific colour map. */
+  --profile-ink: #8f9be8;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 10px 9px;
+  color: var(--profile-ink);
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(143, 155, 232, 0.06), transparent 70%),
+    rgba(4, 10, 17, 0.42);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-md);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.title {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+}
+
+.count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.grid line {
+  stroke: rgba(126, 178, 214, 0.1);
+  stroke-width: 0.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.axis line {
+  stroke: rgba(126, 178, 214, 0.28);
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+}
+
+.tickLabel text {
+  fill: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.02em;
+}
+
+.axisTitle {
+  fill: var(--text-primary);
+  font-size: 8.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+/* A wide, faint copy under the line — a soft bloom without a filter pass. */
+.glow {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.12;
+}
+
+.line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.markers circle {
+  fill: var(--ocean-abyss);
+  stroke: currentColor;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 12px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-faint);
+  text-align: left;
+}
+
+.stateError {
+  color: var(--text-muted);
+}
+
+.stateIcon {
+  flex: none;
+  font-size: 13px;
+  opacity: 0.7;
+}
