@@ -37,10 +37,11 @@ dist/
 htmlcov/
 
 # ---------- Data pipeline (D8+) ----------
-# Regenerated on demand from data/raw/. Raw inputs under data/raw/ are tracked;
-# derived pipeline artifacts are not.
+# Regenerated on demand from data/raw/. Raw inputs under data/raw/ are tracked.
+# data/bluenexus/*.bnx (D9 BlueNexus containers) are also tracked -- the
+# read-only Vercel deployment filesystem cannot rebuild them at startup, so
+# the validated pre-built artifacts must ship in the repository.
 data/processed/*.d8.json
-data/bluenexus/*.bnx
 
 # ---------- Environment ----------
 .env
