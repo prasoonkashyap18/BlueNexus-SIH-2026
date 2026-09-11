@@ -1,7 +1,10 @@
-# Root-level dependency manifest for Vercel's Python builder, which looks for
-# requirements.txt at the project root (see `main.py` and `vercel.json`).
-#
-# The real, maintained dependency list stays at `backend/requirements.txt` --
-# this file only points to it via pip's `-r` include so there is one source
-# of truth and nothing here can drift out of sync with local development.
--r backend/requirements.txt
+# Root-level dependency manifest for the Vercel deployment (see `main.py` and
+# `vercel.json`). Vercel's Python builder reads requirements.txt from the
+# project root and cannot follow `-r` includes, so the pins are listed here
+# directly. They MUST stay identical to `backend/requirements.txt`, which
+# remains the documented dependency list for local development.
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+xarray==2026.7.0
+netCDF4==1.7.4
+gsw==3.6.23
