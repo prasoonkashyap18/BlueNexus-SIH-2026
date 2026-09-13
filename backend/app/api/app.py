@@ -6,7 +6,9 @@ Assembles the app the historical ``main:app`` entry point re-exports:
 * the BlueNexus gridded-dataset endpoints (``/api/datasets`` ...),
 * the in-situ observation endpoints (``/api/observations/argo|gliders`` ...),
 * CORS driven by config (``BLUENEXUS_CORS_ORIGINS``), never ``*``,
-* a single JSON error envelope for every failure (no tracebacks, no paths).
+* a single JSON error envelope for every failure (no tracebacks, no paths),
+* Step 57: a CDN `Cache-Control` header on immutable GET responses (see
+  ``app/api/caching.py``) -- headers only, no response body is affected.
 
 The BlueNexus catalog and the Argo / glider snapshots are loaded once on
 startup. Routes only ever read the loaded D9 ``.bnx`` containers and the loaded
@@ -18,12 +20,13 @@ from __future__ import annotations
 
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from ..services.catalog import init_catalog
 from ..services.netcdf_service import build_netcdf_service
 from ..services.observations import init_argo_catalog, init_glider_catalog
+from .caching import IMMUTABLE_CACHE_CONTROL, is_immutable_get_path
 from .config import ApiConfig
 from .errors import install_error_handlers
 from .routes import api_router
@@ -108,6 +111,23 @@ def create_app(config: ApiConfig | None = None) -> FastAPI:
 
     install_error_handlers(app)
     app.include_router(api_router)
+
+    # Step 57 -- add a long-lived, CDN-cacheable `Cache-Control` header to
+    # successful (200) GET responses on the allow-listed immutable routes
+    # (see app/api/caching.py for the full list + rationale). Every other
+    # response -- every error, every other route -- is returned completely
+    # untouched: no body, header, or status code is altered besides this one
+    # addition.
+    @app.middleware("http")
+    async def add_immutable_cache_headers(request: Request, call_next):
+        response = await call_next(request)
+        if (
+            request.method == "GET"
+            and response.status_code == 200
+            and is_immutable_get_path(request.url.path)
+        ):
+            response.headers["Cache-Control"] = IMMUTABLE_CACHE_CONTROL
+        return response
 
     # Stash config for introspection / tests.
     app.state.config = config

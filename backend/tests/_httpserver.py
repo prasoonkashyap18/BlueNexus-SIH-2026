@@ -45,6 +45,26 @@ class LiveServer:
     def raw_get(self, path: str) -> tuple[int, str]:
         return self.request("GET", path, expect_json=False)
 
+    def get_with_headers(self, path: str, *, expect_json: bool = True):
+        """Step 57: like :meth:`get`, but also returns the response headers
+        (case-insensitive ``email.message.Message`` mapping), so tests can
+        assert on ``Cache-Control`` without disturbing every existing
+        ``status, body = SRV.get(...)`` call site."""
+        url = self.base_url + path
+        req = urllib.request.Request(url, method="GET")
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                body = resp.read().decode("utf-8")
+                status = resp.status
+                headers = resp.headers
+        except urllib.error.HTTPError as e:
+            body = e.read().decode("utf-8")
+            status = e.code
+            headers = e.headers
+            e.close()
+        payload = json.loads(body) if (expect_json and body) else body
+        return status, payload, headers
+
 
 @contextmanager
 def live_server(app, *, host: str = "127.0.0.1") -> Iterator[LiveServer]:
