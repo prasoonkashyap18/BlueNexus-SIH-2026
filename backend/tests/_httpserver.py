@@ -45,13 +45,14 @@ class LiveServer:
     def raw_get(self, path: str) -> tuple[int, str]:
         return self.request("GET", path, expect_json=False)
 
-    def get_with_headers(self, path: str, *, expect_json: bool = True):
+    def get_with_headers(self, path: str, *, expect_json: bool = True, request_headers: dict[str, str] | None = None):
         """Step 57: like :meth:`get`, but also returns the response headers
         (case-insensitive ``email.message.Message`` mapping), so tests can
         assert on ``Cache-Control`` without disturbing every existing
-        ``status, body = SRV.get(...)`` call site."""
+        ``status, body = SRV.get(...)`` call site. Step 58: optionally send
+        extra request headers (e.g. ``Origin``) to exercise CORS."""
         url = self.base_url + path
-        req = urllib.request.Request(url, method="GET")
+        req = urllib.request.Request(url, method="GET", headers=request_headers or {})
         try:
             with urllib.request.urlopen(req, timeout=30) as resp:
                 body = resp.read().decode("utf-8")

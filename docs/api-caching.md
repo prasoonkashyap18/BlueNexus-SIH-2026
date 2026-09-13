@@ -147,3 +147,71 @@ this header.
 `backend/tests/_httpserver.py` gained one additive method,
 `get_with_headers`, so tests can inspect response headers; every existing
 `SRV.get(...)` call site is untouched.
+
+---
+
+## 8. Step 58 — the CDN-cache / CORS interaction incident, and the fix
+
+**What happened.** Shortly after Step 57 shipped, the production frontend
+started showing "Temperature data unavailable". Chrome's Network panel
+showed the exact mechanism: a cached response (`X-Vercel-Cache: HIT`,
+the Step 57 `Cache-Control` present) came back **without**
+`Access-Control-Allow-Origin`, so the browser refused to let the page read
+it — even though a direct `curl` against the same URL looked perfectly
+healthy.
+
+**Root cause.** Starlette's `CORSMiddleware` only ever adds CORS headers to
+a response when *the request that produced it* carried an `Origin` header —
+see `starlette/middleware/cors.py`:
+
+```python
+if origin is None:
+    await self.app(scope, receive, send)
+    return
+```
+
+Any Origin-less request — a plain `curl`, a health-checker, a bot, or simply
+whichever request happened to be first to warm a given URL's edge-cache slot
+— sails through with zero CORS headers. Vercel's CDN caches responses keyed
+on the URL alone; when an Origin-less request is the one that populates a
+slot, every subsequent `HIT` — including a real browser's `fetch()`, which
+does send `Origin` — is served those same CORS-header-less bytes and
+(correctly) blocked by the browser. This is a header bug, not a data bug:
+the JSON body was identical either way.
+
+Reflecting the specific allowed origin (`CORSMiddleware`'s existing
+behaviour: echo `Origin` + `Vary: Origin`) does not fix this on its own: it
+requires the CDN to actually partition its cache per distinct `Origin` value
+whenever `Vary: Origin` is present. Vercel's edge did not do that here (the
+incident is direct proof), and depending on it would still leave any
+Origin-less request able to poison the cache for every browser after it —
+and it isn't verifiable read-only from outside the platform.
+
+**The fix.** `backend/app/api/caching.py`'s
+`apply_immutable_response_headers()` now also forces
+`Access-Control-Allow-Origin: *` onto every allow-listed, 200 GET response —
+regardless of the request's own `Origin` (or lack of one) — and drops any
+`Vary: Origin` `CORSMiddleware` may have added (a `*` response doesn't vary
+by origin, and a leftover `Vary` would only fragment the cache). This is safe
+specifically because every one of these routes is: plain `GET`, never uses
+credentials (`allow_credentials=False`, unchanged), and serves data that is
+already fully public with no auth. A `*` value is valid for *any* origin, so
+it cannot go stale or wrong no matter which request populated a given cache
+slot — it needs no cooperation from the CDN's Vary handling at all.
+
+**Scope of the change.** Only the same Step 57 allow-list is affected.
+`GET /api/health` and every error response (any non-`200`) are completely
+untouched — they keep the original `CORSMiddleware` allowlist behaviour
+(the configured origin echoed back only when it matches, `Vary: Origin`
+present, nothing at all for a disallowed origin). The middleware runs
+*after* `CORSMiddleware` in the response direction (confirmed empirically:
+`app.user_middleware` places the caching/CORS-fix `BaseHTTPMiddleware`
+ahead of `CORSMiddleware`, which — per Starlette's reversed middleware-stack
+construction — makes it the outer, last-to-touch-the-response layer), so it
+always has the final say on these two headers for the routes it targets.
+
+**Files changed:** `backend/app/api/caching.py` (the fix + full rationale,
+see its "Step 58" docstring section), `backend/app/api/app.py` (one call
+site), `backend/tests/_httpserver.py` (additive: send a custom `Origin`
+header), `backend/tests/test_caching.py` (regression tests, including the
+exact Origin-less trigger).

@@ -38,6 +38,76 @@ middleware only ever *adds* a response header, and only for a successful
 (``200``) GET on an allow-listed path. Every non-2xx response (a transient
 ``404`` / ``422`` / ``503``) is left untouched, matching the rule that error
 responses are never cached.
+
+Step 58 -- CORS + CDN caching interaction fix
+==============================================
+
+**The incident.** Once Step 57 shipped, the production frontend started
+showing "Temperature data unavailable". Chrome's Network panel showed the
+*exact* mechanism: a cached response (`X-Vercel-Cache: HIT`,
+`Cache-Control: public, max-age=3600`) came back **without**
+`Access-Control-Allow-Origin`, so the browser refused to let the page read
+it -- a CORS failure, even though a plain `curl` against the same URL (no
+`Origin` header) looked perfectly healthy.
+
+**Root cause.** Starlette's `CORSMiddleware` (see
+``starlette/middleware/cors.py``) only ever touches a response when the
+*request that produced it* carried an `Origin` header:
+
+    if origin is None:
+        await self.app(scope, receive, send)
+        return
+
+Any request with no `Origin` header -- a plain `curl`, a health-checker, a
+crawler, or simply the first request that happens to warm a given URL's edge
+cache slot -- sails straight through with **zero** CORS headers added. When
+*that* response is the one Vercel's CDN caches (keyed on the URL alone, with
+no `Vary: Origin` split happening at the edge), every subsequent `HIT` --
+including a real browser's cross-origin `fetch()`, which does send `Origin`
+-- is served the exact same CORS-header-less bytes. The browser then
+(correctly) blocks it. This is not a caching bug in the sense of wrong data;
+the JSON body is byte-identical either way -- it is a *header* bug: the one
+header a browser needs was decided by an unrelated, earlier, Origin-less
+request.
+
+The alternative Starlette already offers for a *specific* allowed origin --
+reflecting `Access-Control-Allow-Origin: <origin>` plus `Vary: Origin`
+(`CORSMiddleware.allow_explicit_origin`) -- does not fix this: it depends on
+the CDN re-running the origin-selection logic and creating one cached
+variant *per distinct `Origin` value* whenever `Vary: Origin` is present.
+Vercel's edge cache did not do that here (the incident is direct proof of
+it), and relying on it would still leave GET requests from a bare `curl` /
+bot / health-check permanently poisoning the cache for every browser after
+them. It also is not verifiable read-only from outside the platform, and the
+brief was to pick the option that does not depend on unverified CDN
+behaviour.
+
+**The fix.** These specific allow-listed routes are all: (a) plain `GET`,
+(b) never send or read a cookie / `Authorization` header (`allow_credentials`
+is `False` -- confirmed in ``app/api/app.py``'s `CORSMiddleware` setup and
+never changed here), and (c) serve data that is already fully public to any
+HTTP client with no auth at all (that is the whole point of a public ocean
+data API). For exactly this shape of endpoint, the Fetch/CORS specification
+allows `Access-Control-Allow-Origin: *` -- and, critically, a `*` response is
+**origin-independent**: it is valid for literally any request, so it does
+not matter which request (with or without `Origin`, from any host) happened
+to populate a given CDN cache slot. This middleware now forces exactly that
+value onto every allow-listed cacheable response, overriding whatever
+`CORSMiddleware` computed (nothing, one echoed origin, or -- if a request
+carried no `Origin` at all -- nothing), and drops any `Vary: Origin` that
+`CORSMiddleware` may have added, since a `*` response does not vary by origin
+and an inherited `Vary: Origin` would only fragment the CDN cache for no
+benefit.
+
+This intentionally narrows the origin allowlist's protection to exactly
+where it still matters: `GET /api/health` and every non-2xx error response
+(never touched by this module) keep the original, unmodified
+`CORSMiddleware` behaviour -- an explicit allowlist, origin reflected only
+when it matches, `Vary: Origin` present, nothing for a disallowed origin.
+Only the deliberately-public, already-CDN-cached dataset surface becomes
+openly cross-origin-fetchable, which is the minimum change that actually
+stops a cache slot's CORS header from depending on which client happened to
+warm it.
 """
 
 from __future__ import annotations
@@ -113,7 +183,38 @@ _IMMUTABLE_GET_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
 #:                                         instant.
 IMMUTABLE_CACHE_CONTROL = "public, max-age=3600, s-maxage=2592000, stale-while-revalidate=86400"
 
+#: Step 58 -- forced onto every allow-listed cacheable response regardless of
+#: the request's own `Origin` (or lack of one). Safe here specifically because
+#: these routes never use credentials (`allow_credentials=False`, unchanged)
+#: and serve data that is already fully public with no auth. A `*` response is
+#: valid for every origin, so it cannot go stale/wrong no matter which request
+#: populated a given CDN cache slot -- see the module docstring ("Step 58").
+IMMUTABLE_CORS_ALLOW_ORIGIN = "*"
+
 
 def is_immutable_get_path(path: str) -> bool:
     """Whether ``path`` (no query string) is one of the allow-listed shapes."""
     return any(pattern.match(path) for pattern in _IMMUTABLE_GET_PATTERNS)
+
+
+def apply_immutable_response_headers(headers) -> None:
+    """Make one allow-listed 200 GET response safe to serve from a shared CDN
+    cache to any caller, regardless of which request originally populated
+    that cache entry.
+
+    Sets the long-lived ``Cache-Control`` (Step 57) and forces
+    ``Access-Control-Allow-Origin: *`` (Step 58), replacing whatever
+    ``CORSMiddleware`` computed for *this particular* request (an echoed
+    origin, or nothing at all if the request had no ``Origin`` header).  Also
+    drops any ``Vary: Origin`` ``CORSMiddleware`` may have added -- a ``*``
+    response does not vary by origin, and leaving it in would only fragment
+    the CDN cache across `Origin` values for no benefit.
+
+    ``headers`` is a ``starlette.datastructures.MutableHeaders`` (or anything
+    with the same ``__setitem__`` / ``__delitem__`` / ``__contains__``
+    contract); this function never touches the response body or status code.
+    """
+    headers["Cache-Control"] = IMMUTABLE_CACHE_CONTROL
+    headers["Access-Control-Allow-Origin"] = IMMUTABLE_CORS_ALLOW_ORIGIN
+    if "vary" in headers:
+        del headers["vary"]

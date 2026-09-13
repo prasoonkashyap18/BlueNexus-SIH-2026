@@ -26,7 +26,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from ..services.catalog import init_catalog
 from ..services.netcdf_service import build_netcdf_service
 from ..services.observations import init_argo_catalog, init_glider_catalog
-from .caching import IMMUTABLE_CACHE_CONTROL, is_immutable_get_path
+from .caching import apply_immutable_response_headers, is_immutable_get_path
 from .config import ApiConfig
 from .errors import install_error_handlers
 from .routes import api_router
@@ -114,10 +114,16 @@ def create_app(config: ApiConfig | None = None) -> FastAPI:
 
     # Step 57 -- add a long-lived, CDN-cacheable `Cache-Control` header to
     # successful (200) GET responses on the allow-listed immutable routes
-    # (see app/api/caching.py for the full list + rationale). Every other
-    # response -- every error, every other route -- is returned completely
-    # untouched: no body, header, or status code is altered besides this one
-    # addition.
+    # (see app/api/caching.py for the full list + rationale). Step 58 --
+    # also force `Access-Control-Allow-Origin: *` (and drop any inherited
+    # `Vary: Origin`) on those same responses so a CDN cache slot's CORS
+    # header can never depend on which request happened to populate it (see
+    # app/api/caching.py's "Step 58" section for the incident + full
+    # rationale). Every other response -- every error, `/api/health`, every
+    # other route -- is returned completely untouched: no body, header, or
+    # status code is altered besides these two additions, and this
+    # middleware runs *after* `CORSMiddleware` in the response direction, so
+    # it always has the final say on these two headers.
     @app.middleware("http")
     async def add_immutable_cache_headers(request: Request, call_next):
         response = await call_next(request)
@@ -126,7 +132,7 @@ def create_app(config: ApiConfig | None = None) -> FastAPI:
             and response.status_code == 200
             and is_immutable_get_path(request.url.path)
         ):
-            response.headers["Cache-Control"] = IMMUTABLE_CACHE_CONTROL
+            apply_immutable_response_headers(response.headers)
         return response
 
     # Stash config for introspection / tests.
