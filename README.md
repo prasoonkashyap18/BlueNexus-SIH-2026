@@ -10,7 +10,7 @@ shown as missing rather than filled.
 
 ---
 
-## What problem it solves
+## What problem it solves?
 
 INCOIS publishes ocean analyses, forecasts and observations through several separate
 services (ERDDAP, THREDDS) in formats (NetCDF, tabledap CSV) that are not directly
