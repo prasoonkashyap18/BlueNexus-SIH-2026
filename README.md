@@ -1,4 +1,4 @@
-# INCOIS Ocean 3D Visualization Platform ("BlueNexus") :
+# INCOIS Ocean 3D Visualization Platform ("BlueNexus") Rajat:
 
 **Smart India Hackathon 2026 — INCOIS problem statement.**
 
