@@ -19,7 +19,7 @@ interface GeoContextProps {
  * A latitude/longitude graticule laid on a gently curved surface that runs out
  * from the edge of the domain and dissolves into the haze, with the region's
  * own coordinate picked out, its footprint bracketed at the corners, and a
- * single compass letter off the north edge. That is the whole of it: no
+ * compass letter off each edge. That is the whole of it: no
  * coastline, no landmass, no bathymetry and no basin outline is drawn or
  * implied — see `geography.ts` for what the geometry actually represents.
  *
@@ -32,7 +32,7 @@ interface GeoContextProps {
  * - **It yields to the camera.** Closing in on the water fades it down towards
  *   a trace; pulling back brings it up, because that is when a reader is
  *   asking where they are rather than what the water is doing.
- * - **It is lines and one letter.** No fill, no depth writes, one draw call
+ * - **It is lines and a few letters.** No fill, no depth writes, one draw call
  *   each for the grid and the brackets, and nothing that can occlude a surface.
  *
  * Arriving somewhere new is the one moment the frame is allowed to speak up:
@@ -44,17 +44,29 @@ function GeoContextImpl({ region, animated = true }: GeoContextProps) {
   const frame = useMemo(() => geoFrame(region), [region])
   const graticule = useMemo(() => buildGraticule(frame), [frame])
   const marker = useMemo(() => buildRegionMarker(), [])
-  const north = useMemo(
-    () =>
-      labelTexture('N', {
+
+  // One label per cardinal direction, off the matching edge of the domain.
+  // East is +x and north is -z throughout the scene (see `projectGeo`), so
+  // south and west are simply the opposite edges.
+  const compass = useMemo(() => {
+    const halfX = DOMAIN.width / 2 + GEO.compassOffset
+    const halfZ = DOMAIN.depth / 2 + GEO.compassOffset
+    return [
+      { letter: 'N', position: [0, 0.06, -halfZ] as const },
+      { letter: 'S', position: [0, 0.06, halfZ] as const },
+      { letter: 'E', position: [halfX, 0.06, 0] as const },
+      { letter: 'W', position: [-halfX, 0.06, 0] as const },
+    ].map((entry) => ({
+      ...entry,
+      texture: labelTexture(entry.letter, {
         width: 96,
         height: 96,
         fontSize: 58,
         align: 'centre',
         color: GEO.markedColor,
       }),
-    [],
-  )
+    }))
+  }, [])
 
   // Step 40: a few real coordinate values (e.g. "74°E", "12°N") on the lines
   // that bound the visible window — the graticule, named. Rebuilt with the
@@ -74,7 +86,7 @@ function GeoContextImpl({ region, animated = true }: GeoContextProps) {
 
   const graticuleMaterial = useRef<LineBasicMaterial>(null)
   const markerMaterial = useRef<LineBasicMaterial>(null)
-  const northMaterial = useRef<SpriteMaterial>(null)
+  const compassMaterials = useRef<(SpriteMaterial | null)[]>([])
   const labelMaterials = useRef<(SpriteMaterial | null)[]>([])
 
   /** Arrival fade, 0 → 1, restarted whenever the graticule is rebuilt. */
@@ -86,7 +98,10 @@ function GeoContextImpl({ region, animated = true }: GeoContextProps) {
   // scene's static furniture it has to give the old buffers back.
   useEffect(() => () => graticule.dispose(), [graticule])
   useEffect(() => () => marker.dispose(), [marker])
-  useEffect(() => () => north.dispose(), [north])
+  useEffect(
+    () => () => compass.forEach((entry) => entry.texture.dispose()),
+    [compass],
+  )
   useEffect(
     () => () => coordinateLabels.forEach((label) => label.texture.dispose()),
     [coordinateLabels],
@@ -127,8 +142,9 @@ function GeoContextImpl({ region, animated = true }: GeoContextProps) {
     }
     // The compass is not part of the selection, so it holds its weight through
     // a region change instead of re-announcing itself with the brackets.
-    if (northMaterial.current !== null) {
-      northMaterial.current.opacity = GEO.northOpacity * presence
+    const compassOpacity = GEO.compassOpacity * presence
+    for (const material of compassMaterials.current) {
+      if (material !== null) material.opacity = compassOpacity
     }
 
     // Coordinate labels track the graticule: they fade in with it on arrival
@@ -163,22 +179,27 @@ function GeoContextImpl({ region, animated = true }: GeoContextProps) {
         />
       </lineSegments>
 
-      {/* North is towards -z throughout the scene (see `projectGeo`). One
-          letter, because the reader needs to know which way the graticule runs
-          and nothing more than that. */}
-      <sprite
-        position={[0, 0.06, -(DOMAIN.depth / 2 + GEO.northOffset)]}
-        scale={[GEO.northSize, GEO.northSize, 1]}
-        renderOrder={RENDER_ORDER.label}
-      >
-        <spriteMaterial
-          ref={northMaterial}
-          map={north}
-          transparent
-          opacity={0}
-          depthWrite={false}
-        />
-      </sprite>
+      {/* One letter per cardinal direction, off the matching edge, so the
+          reader can tell which way the graticule runs without guessing from
+          north alone. */}
+      {compass.map((entry, index) => (
+        <sprite
+          key={entry.letter}
+          position={entry.position}
+          scale={[GEO.compassSize, GEO.compassSize, 1]}
+          renderOrder={RENDER_ORDER.label}
+        >
+          <spriteMaterial
+            ref={(material) => {
+              compassMaterials.current[index] = material
+            }}
+            map={entry.texture}
+            transparent
+            opacity={0}
+            depthWrite={false}
+          />
+        </sprite>
+      ))}
 
       {/* Step 40: real degree values on the lines that bound the window, placed
           with the same `projectGeo` transform as everything else in the scene.

@@ -61,10 +61,10 @@ export const GEO = {
   /** Opacity ceiling of the region brackets. */
   markerOpacity: 0.52,
 
-  /** The compass letter off the north edge: how far out, how big, how present. */
-  northOffset: 1.6,
-  northSize: 0.46,
-  northOpacity: 0.44,
+  /** The compass letters off each edge: how far out, how big, how present. */
+  compassOffset: 1.6,
+  compassSize: 0.46,
+  compassOpacity: 0.44,
 
   /* ---- Step 40: coordinate labels on the graticule ---------------- *
    * A few real degree values (e.g. "74°E", "12°N") set just outside the
@@ -75,7 +75,7 @@ export const GEO = {
   labelOffset: 1.15,
   /** Small lift so the sprite clears the curved reference surface. */
   labelLift: 0.06,
-  /** Text height of a coordinate label, world units (compare northSize 0.46). */
+  /** Text height of a coordinate label, world units (compare compassSize 0.46). */
   labelSize: 0.38,
   /** At most this many labels per axis — every other line is dropped first. */
   maxLabelsPerAxis: 5,
